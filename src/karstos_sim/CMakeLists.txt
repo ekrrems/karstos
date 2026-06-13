@@ -30,6 +30,7 @@ install(DIRECTORY
 worlds
 models
 launch
+config
 DESTINATION share/${PROJECT_NAME})
 
 

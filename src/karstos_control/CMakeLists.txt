@@ -7,12 +7,16 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rclpy REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(actuator_msgs REQUIRED)
+find_package(tf2_msgs REQUIRED)
+
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -25,5 +29,26 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+add_executable(flight_controller src/flight_controller.cpp)
+add_executable(pose_extractor src/pose_extractor.cpp)
+
+
+ament_target_dependencies(
+  flight_controller
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+  actuator_msgs
+  std_msgs
+)
+ament_target_dependencies(pose_extractor rclcpp tf2_msgs geometry_msgs)
+
+
+target_link_libraries(flight_controller Eigen3::Eigen)
+
+install(TARGETS pose_extractor flight_controller
+  DESTINATION lib/${PROJECT_NAME})
+
 
 ament_package()

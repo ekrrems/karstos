@@ -9,7 +9,7 @@ slam_toolbox:
 
     odom_frame: odom
     map_frame: map
-    base_frame: my_drone/X3/base_link
+    base_frame: my_drone/X3/base_link/drone_lidar
     scan_topic: /drone/lidar
     mode: mapping
 
