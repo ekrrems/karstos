@@ -15,8 +15,8 @@ find_package(nav_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(actuator_msgs REQUIRED)
 find_package(tf2_msgs REQUIRED)
-
-
+find_package(tf2_ros REQUIRED)
+find_package(px4_msgs REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -30,25 +30,41 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(flight_controller src/flight_controller.cpp)
-add_executable(pose_extractor src/pose_extractor.cpp)
 
+add_executable(vision_pose_publisher src/vision_pose_publisher.cpp)
+ament_target_dependencies(vision_pose_publisher rclcpp geometry_msgs px4_msgs)
 
-ament_target_dependencies(
-  flight_controller
+add_executable(offboard_controller src/offboard_controller.cpp)
+ament_target_dependencies(offboard_controller rclcpp px4_msgs)
+
+add_executable(px4_tf_broadcaster src/px4_tf_broadcaster.cpp)
+ament_target_dependencies(px4_tf_broadcaster
   rclcpp
-  sensor_msgs
+  px4_msgs
+  tf2
+  tf2_ros
   geometry_msgs
-  actuator_msgs
-  std_msgs
+  sensor_msgs
 )
-ament_target_dependencies(pose_extractor rclcpp tf2_msgs geometry_msgs)
+
+install(TARGETS vision_pose_publisher offboard_controller px4_tf_broadcaster
+    DESTINATION lib/${PROJECT_NAME})
+
+# ament_target_dependencies(
+#   flight_controller
+#   rclcpp
+#   sensor_msgs
+#   geometry_msgs
+#   actuator_msgs
+#   std_msgs
+# )
+# ament_target_dependencies(pose_extractor rclcpp tf2_msgs geometry_msgs)
 
 
-target_link_libraries(flight_controller Eigen3::Eigen)
+# target_link_libraries(flight_controller Eigen3::Eigen)
 
-install(TARGETS pose_extractor flight_controller
-  DESTINATION lib/${PROJECT_NAME})
+# install(TARGETS pose_extractor vision_pose_publisher
+#   DESTINATION lib/${PROJECT_NAME})
 
 
 ament_package()
