@@ -33,7 +33,7 @@ private:
 
         geometry_msgs::msg::TransformStamped tf;
 
-        tf.header.stamp = this->now();
+        tf.header.stamp = this->get_clock()->now();;
         tf.header.frame_id = "odom";
         tf.child_frame_id = "base_link";
 
